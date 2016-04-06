@@ -52,8 +52,8 @@ def main():
     extension = "json" if args.json else "csv"
 
     box_output_fn = os.path.join(
-        mvz.const.output_dir, "%s_%s_auto_boxes.%s" % (
-            youtube_id, args.method, extension))
+        mvz.const.output_dir, "%s.%s" % (
+            youtube_id, extension))
     with open(box_output_fn, 'w') as f:
         if args.json:
             f.write(json.dumps(normalized_boxes))
