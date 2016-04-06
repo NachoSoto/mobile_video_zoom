@@ -32,25 +32,28 @@ def main():
     args = parser.parse_args()
     if not os.path.exists(mvz.const.output_dir):
         os.makedirs(mvz.const.output_dir)
-    mvz.downloader.download(args.youtube_id, bust_cache=args.bust_cache)
-    (_, video_width, video_height) = mvz.image_processing.main(args.youtube_id, bust_cache=args.bust_cache)
+
+    youtube_id = args.youtube_id.lstrip()
+
+    mvz.downloader.download(youtube_id, bust_cache=args.bust_cache)
+    (_, video_width, video_height) = mvz.image_processing.main(youtube_id, bust_cache=args.bust_cache)
     mvz_methods = __import__('mvz.methods.%s' % args.method).methods
     boxes = getattr(mvz_methods, args.method).main(
-        args.youtube_id,
-        frame_count=mvz.image_processing.n_frames(args.youtube_id),
+        youtube_id,
+        frame_count=mvz.image_processing.n_frames(youtube_id),
         keyframes_only=not args.all_frames,
         video_width=video_width,
         video_height=video_height
     )
     normalized_boxes = mvz_methods.shared.normalize_boxes(boxes, video_width, video_height)
     if args.all_frames:
-        mvz.generate_video.main(args.youtube_id, args.method, "auto")
+        mvz.generate_video.main(youtube_id, args.method, "auto")
 
     extension = "json" if args.json else "csv"
 
     box_output_fn = os.path.join(
         mvz.const.output_dir, "%s_%s_auto_boxes.%s" % (
-            args.youtube_id, args.method, extension))
+            youtube_id, args.method, extension))
     with open(box_output_fn, 'w') as f:
         if args.json:
             f.write(json.dumps(normalized_boxes))
