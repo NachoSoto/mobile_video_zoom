@@ -3,9 +3,6 @@ from typing import Tuple
 
 import funcy as fn
 
-# TODO(colin): don't hardcode these
-video_id = 'AqMT_zB9rP8'
-
 url_for_youtube_id = (
     'http://fastly.kastatic.org/KA-youtube-converted'
     '/%(yt_id)s.mp4/%(yt_id)s.mp4')
